@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>实用工具箱 · 全能版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:linear-gradient(145deg,#f6f9fc,#e9f0f8);min-height:100vh;color:#1e2e44;overflow-x:hidden;
+}
+.app-header{
+  position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:14px 20px;
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,0,0,0.05);z-index:100;
+}
+.back-btn{
+  background:rgba(45,75,124,0.1);border:none;width:36px;height:36px;border-radius:12px;
+  font-size:1.2rem;color:#2d4b7c;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.back-btn:hover{background:rgba(45,75,124,0.2);}
+.app-header h1{
+  font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#1e3a5f,#3865a0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+main{padding:20px;max-width:1100px;margin:0 auto;}
+.view{display:none;animation:fadeIn .3s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============ 首页卡片 ============ */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;}
+.card{
+  background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-radius:24px;padding:22px 16px;text-align:center;cursor:pointer;transition:.25s;
+  box-shadow:0 12px 30px -12px rgba(0,20,40,0.15),inset 0 0 0 1px rgba(255,255,255,0.8);
+  border:1px solid rgba(255,255,255,0.5);
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 25px 35px -15px rgba(30,60,100,0.3);background:rgba(255,255,255,0.95);}
+.card:active{transform:scale(0.97);}
+.icon{
+  width:60px;height:60px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;margin:0 auto 12px;box-shadow:0 12px 18px -8px rgba(0,0,0,0.2);
+}
+.card h3{font-size:1.1rem;margin-bottom:6px;}
+.card p{font-size:0.78rem;color:#5b6f88;}
+
+/* ============ 标签页 ============ */
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.tab{
+  background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.8);padding:10px 18px;
+  border-radius:14px;font-size:0.9rem;font-weight:600;cursor:pointer;color:#5b6f88;transition:.2s;
+}
+.tab:hover{background:rgba(255,255,255,0.9);}
+.tab.active{
+  background:linear-gradient(135deg,#4b7bb5,#2d4b7c);color:white;border-color:transparent;
+  box-shadow:0 8px 16px -8px rgba(45,75,124,0.5);
+}
+.panel{display:none;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+
+/* ============ 表单 ============ */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:.85rem;font-weight:600;color:#5b6f88;margin-bottom:6px;}
+.field input[type="number"],.field input[type="text"],.field textarea{
+  width:100%;padding:12px 14px;border-radius:12px;border:2px solid #d0dceb;font-size:1rem;
+  outline:none;transition:.2s;background:white;font-family:inherit;
+}
+.field input:focus,.field textarea:focus{border-color:#4b7bb5;box-shadow:0 0 0 3px rgba(75,123,181,0.1);}
+.field textarea{resize:vertical;}
+.field-row{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:12px;}
+.field-row .field{flex:1;min-width:100px;margin-bottom:0;}
+
+/* ============ 按钮 ============ */
+.btn{
+  background:linear-gradient(135deg,#4b7bb5,#2d4b7c);color:white;border:none;padding:12px 24px;
+  border-radius:14px;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;
+  box-shadow:0 8px 16px -8px rgba(45,75,124,0.4);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 20px -8px rgba(45,75,124,0.5);}
+.btn:active{transform:scale(0.97);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn.secondary{background:#e9f0f8;color:#2d4b7c;box-shadow:none;}
+.btn.secondary:hover{background:#d0dceb;}
+.btn.small{padding:8px 16px;font-size:.85rem;}
+
+/* ============ 结果框 ============ */
+.result-box{
+  margin-top:16px;padding:20px;background:rgba(255,255,255,0.8);border-radius:16px;text-align:center;
+  font-size:1.2rem;font-weight:600;color:#2d4b7c;min-height:60px;display:flex;align-items:center;
+  justify-content:center;word-break:break-all;border:1px solid rgba(255,255,255,0.8);
+}
+
+/* ============ 计算器 ============ */
+.calc-display{
+  background:#1e2e44;color:white;font-size:2rem;padding:20px;border-radius:16px;text-align:right;
+  margin-bottom:12px;min-height:70px;word-break:break-all;font-family:'Courier New',monospace;
+}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.calc-keys button{
+  aspect-ratio:1.4;border:none;border-radius:14px;font-size:1.3rem;font-weight:600;cursor:pointer;
+  background:#e9f0f8;color:#1e2e44;transition:.15s;
+}
+.calc-keys button:hover{background:#d0dceb;}
+.calc-keys button:active{transform:scale(0.95);}
+.calc-keys button:nth-child(4n){background:#d0dceb;color:#2d4b7c;}
+.calc-keys button:last-child{background:#4b7bb5;color:white;}
+
+/* ============ 游戏 ============ */
+.game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;}
+.game-item{
+  background:rgba(255,255,255,0.8);border-radius:16px;padding:20px 12px;text-align:center;
+  cursor:pointer;font-weight:600;font-size:0.95rem;transition:.2s;
+  box-shadow:0 8px 20px -10px rgba(0,20,40,0.15);border:1px solid rgba(255,255,255,0.8);
+}
+.game-item:hover{transform:translateY(-4px);background:white;box-shadow:0 15px 25px -10px rgba(30,60,100,0.25);}
+.game-item:active{transform:scale(0.96);}
+.game-container{margin-top:16px;display:flex;flex-direction:column;align-items:center;}
+
+/* ============ 计时器 ============ */
+.timer-display{
+  font-size:3.5rem;font-weight:700;text-align:center;font-family:'Courier New',monospace;
+  color:#1e2e44;padding:20px;background:rgba(255,255,255,0.8);border-radius:20px;
+  margin-bottom:16px;letter-spacing:2px;
+}
+.btn-group{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.lap-list{margin-top:16px;max-height:200px;overflow-y:auto;background:rgba(255,255,255,0.6);border-radius:12px;}
+
+/* ============ Canvas ============ */
+canvas{max-width:100%;height:auto;border-radius:12px;display:block;margin:12px auto;background:white;box-shadow:0 8px 20px -10px rgba(0,20,40,0.2);}
+
+/* ============ 响应式 ============ */
+@media (max-width:600px){
+  .app-header h1{font-size:1.1rem;}
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .card{padding:16px 10px;border-radius:18px;}
+  .icon{width:50px;height:50px;font-size:1.5rem;border-radius:16px;margin-bottom:8px;}
+  .card h3{font-size:0.95rem;}
+  .card p{font-size:0.7rem;}
+  .timer-display{font-size:2.5rem;}
+  .calc-keys button{font-size:1.1rem;}
+  .game-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
+  .game-item{padding:14px 6px;font-size:0.8rem;border-radius:12px;}
+}
+@media (max-width:380px){
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <button class="back-btn" id="backBtn" onclick="goHome()" style="display:none">←</button>
+  <h1 id="pageTitle">🧰 实用工具箱</h1>
+</header>
+<main>
+
+<!-- ========== 首页 ========== -->
+<section id="view-home" class="view active">
+  <div class="grid">
+    <div class="card" onclick="showTool('random')">
+      <div class="icon" style="background:linear-gradient(135deg,#6a5acd,#9f8eff)">🎲</div>
+      <h3>随机工具</h3>
+      <p>随机取数 · 表格抽取 · 滚动抽取</p>
+    </div>
+    <div class="card" onclick="showTool('calc')">
+      <div class="icon" style="background:linear-gradient(135deg,#2b5876,#4e8fb8)">🧮</div>
+      <h3>计算器</h3>
+      <p>普通计算器 · 科学计算器</p>
+    </div>
+    <div class="card" onclick="showTool('games')">
+      <div class="icon" style="background:linear-gradient(135deg,#e65c4f,#f09b7b)">🎮</div>
+      <h3>小游戏</h3>
+      <p>共10个小游戏</p>
+    </div>
+    <div class="card" onclick="showTool('draw')">
+      <div class="icon" style="background:linear-gradient(135deg,#2c9c7c,#62c9a8)">🎨</div>
+      <h3>绘图工具</h3>
+      <p>数学画图 · 美术画图</p>
+    </div>
+    <div class="card" onclick="showTool('timer')">
+      <div class="icon" style="background:linear-gradient(135deg,#b25c9c,#d98fc9)">⏱️</div>
+      <h3>计时器</h3>
+      <p>秒表 · 倒计时</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 随机工具 ========== -->
+<section id="view-random" class="view">
+  <div class="tabs">
+    <button class="tab active" data-tab="r-num" onclick="switchTab('random','r-num')">随机取数</button>
+    <button class="tab" data-tab="r-pick" onclick="switchTab('random','r-pick')">抽取（表格）</button>
+    <button class="tab" data-tab="r-roll" onclick="switchTab('random','r-roll')">滚动抽取（表格）</button>
+  </div>
+
+  <!-- 随机取数 -->
+  <div class="panel active" id="panel-r-num">
+    <div class="field-row">
+      <div class="field"><label>最小值</label><input type="number" id="randMin" value="1"></div>
+      <div class="field"><label>最大值</label><input type="number" id="randMax" value="100"></div>
+      <div class="field"><label>数量</label><input type="number" id="randCount" value="1" min="1" max="20"></div>
+    </div>
+    <button class="btn" onclick="genRandom()">生成随机数</button>
+    <div class="result-box" id="randResult">等待生成...</div>
+  </div>
+
+  <!-- 抽取（表格） -->
+  <div class="panel" id="panel-r-pick">
+    <div class="field">
+      <label>粘贴表格数据（从 Excel / CSV 直接复制，支持 Tab 或逗号分隔）</label>
+      <textarea id="pickTableInput" rows="5" placeholder="姓名,学号,班级
+张三,001,一班
+李四,002,一班
+王五,003,二班"></textarea>
+    </div>
+    <div class="field-row">
+      <button class="btn" onclick="loadPickTable()">📋 解析表格</button>
+      <button class="btn" onclick="pickTableRow()" id="pickTableBtn" disabled>🎲 抽取一行</button>
+      <button class="btn secondary" onclick="pickTableCell()" id="pickCellBtn" disabled>🎯 抽取单元格</button>
+      <button class="btn secondary" onclick="clearPickTable()">清空</button>
+    </div>
+    <div id="pickTablePreview" style="overflow-x:auto;margin-top:12px;"></div>
+    <div class="result-box" id="pickResult">等待抽取...</div>
+  </div>
+
+  <!-- 滚动抽取（表格） -->
+  <div class="panel" id="panel-r-roll">
+    <div class="field">
+      <label>粘贴表格数据（从 Excel / CSV 直接复制，支持 Tab 或逗号分隔）</label>
+      <textarea id="rollTableInput" rows="5" placeholder="姓名,学号,班级
+张三,001,一班
+李四,002,一班
+王五,003,二班"></textarea>
+    </div>
+    <div class="field-row">
+      <button class="btn" onclick="loadRollTable()">📋 解析表格</button>
+      <button class="btn" onclick="startRollTable()" id="rollTableBtn" disabled>🎲 开始滚动</button>
+      <button class="btn secondary" onclick="clearRollTable()">清空</button>
+    </div>
+    <div id="rollTablePreview" style="overflow-x:auto;margin-top:12px;"></div>
+    <div class="result-box" id="rollResult" style="font-size:2rem;min-height:70px;">—</div>
+  </div>
+</section>
+
+<!-- ========== 计算器 ========== -->
+<section id="view-calc" class="view">
+  <div class="tabs">
+    <button class="tab active" data-tab="calc-basic" onclick="switchTab('calc','calc-basic')">普通计算器</button>
+    <button class="tab" data-tab="calc-sci" onclick="switchTab('calc','calc-sci')">科学计算器</button>
+  </div>
+  <div class="panel active" id="panel-calc-basic">
+    <div class="calc-display" id="basicDisplay">0</div>
+    <div class="calc-keys">
+      <button onclick="calcInput('C')">C</button>
+      <button onclick="calcInput('⌫')">⌫</button>
+      <button onclick="calcInput('%')">%</button>
+      <button onclick="calcInput('÷')">÷</button>
+      <button onclick="calcInput('7')">7</button>
+      <button onclick="calcInput('8')">8</button>
+      <button onclick="calcInput('9')">9</button>
+      <button onclick="calcInput('×')">×</button>
+      <button onclick="calcInput('4')">4</button>
+      <button onclick="calcInput('5')">5</button>
+      <button onclick="calcInput('6')">6</button>
+      <button onclick="calcInput('-')">-</button>
+      <button onclick="calcInput('1')">1</button>
+      <button onclick="calcInput('2')">2</button>
+      <button onclick="calcInput('3')">3</button>
+      <button onclick="calcInput('+')">+</button>
+      <button onclick="calcInput('(')">(</button>
+      <button onclick="calcInput('0')">0</button>
+      <button onclick="calcInput('.')">.</button>
+      <button onclick="calcInput('=')">=</button>
+    </div>
+  </div>
+  <div class="panel" id="panel-calc-sci">
+    <div class="calc-display" id="sciDisplay">0</div>
+    <div class="calc-keys">
+      <button onclick="sciInput('sin(')">sin</button>
+      <button onclick="sciInput('cos(')">cos</button>
+      <button onclick="sciInput('tan(')">tan</button>
+      <button onclick="sciInput('π')">π</button>
+      <button onclick="sciInput('log(')">log</button>
+      <button onclick="sciInput('ln(')">ln</button>
+      <button onclick="sciInput('sqrt(')">√</button>
+      <button onclick="sciInput('^')">^</button>
+      <button onclick="sciInput('C')">C</button>
+      <button onclick="sciInput('⌫')">⌫</button>
+      <button onclick="sciInput('(')">(</button>
+      <button onclick="sciInput(')')">)</button>
+      <button onclick="sciInput('7')">7</button>
+      <button onclick="sciInput('8')">8</button>
+      <button onclick="sciInput('9')">9</button>
+      <button onclick="sciInput('÷')">÷</button>
+      <button onclick="sciInput('4')">4</button>
+      <button onclick="sciInput('5')">5</button>
+      <button onclick="sciInput('6')">6</button>
+      <button onclick="sciInput('×')">×</button>
+      <button onclick="sciInput('1')">1</button>
+      <button onclick="sciInput('2')">2</button>
+      <button onclick="sciInput('3')">3</button>
+      <button onclick="sciInput('-')">-</button>
+      <button onclick="sciInput('0')">0</button>
+      <button onclick="sciInput('.')">.</button>
+      <button onclick="sciInput('=')">=</button>
+      <button onclick="sciInput('+')">+</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 小游戏 ========== -->
+<section id="view-games" class="view">
+  <div id="gameGrid" class="game-grid">
+    <div class="game-item" onclick="startGame('snake')">🐍 贪吃蛇</div>
+    <div class="game-item" onclick="startGame('g2048')">🔢 2048</div>
+    <div class="game-item" onclick="startGame('tictactoe')">⭕ 井字棋</div>
+    <div class="game-item" onclick="startGame('guess')">🎯 猜数字</div>
+    <div class="game-item" onclick="startGame('breakout')">🧱 打砖块</div>
+    <div class="game-item" onclick="startGame('memory')">🃏 记忆翻牌</div>
+    <div class="game-item" onclick="startGame('puzzle')">🧩 数字华容道</div>
+    <div class="game-item" onclick="startGame('typing')">⌨️ 打字测速</div>
+    <div class="game-item" onclick="startGame('pong')">🏓 乒乓球</div>
+    <div class="game-item" onclick="startGame('minesweeper')">💣 扫雷</div>
+  </div>
+  <div id="gameArea" style="display:none">
+    <button class="btn small" onclick="exitGame()">← 退出游戏</button>
+    <div id="gameContainer" class="game-container"></div>
+  </div>
+</section>
+
+<!-- ========== 绘图工具 ========== -->
+<section id="view-draw" class="view">
+  <div class="tabs">
+    <button class="tab active" data-tab="draw-math" onclick="switchTab('draw','draw-math')">数学画图</button>
+    <button class="tab" data-tab="draw-art" onclick="switchTab('draw','draw-art')">美术画图</button>
+  </div>
+  <div class="panel active" id="panel-draw-math">
+    <div class="field">
+      <label>函数 f(x) = </label>
+      <input type="text" id="mathFunc" value="sin(x)" placeholder="例如: sin(x), x^2, 2*x+1, sqrt(x)">
+    </div>
+    <button class="btn" onclick="drawMath()">绘制</button>
+    <canvas id="mathCanvas" width="600" height="400"></canvas>
+  </div>
+  <div class="panel" id="panel-draw-art">
+    <div class="field-row">
+      <div class="field"><label>颜色</label><input type="color" id="brushColor" value="#2d4b7c"></div>
+      <div class="field"><label>粗细</label><input type="range" id="brushSize" min="1" max="30" value="4" style="width:100%"></div>
+    </div>
+    <div class="field-row">
+      <button class="btn small secondary" onclick="clearArt()">清空画布</button>
+      <button class="btn small" onclick="saveArt()">保存图片</button>
+    </div>
+    <canvas id="artCanvas" width="600" height="400" style="touch-action:none"></canvas>
+  </div>
+</section>
+
+<!-- ========== 计时器 ========== -->
+<section id="view-timer" class="view">
+  <div class="tabs">
+    <button class="tab active" data-tab="timer-stop" onclick="switchTab('timer','timer-stop')">秒表</button>
+    <button class="tab" data-tab="timer-count" onclick="switchTab('timer','timer-count')">倒计时</button>
+  </div>
+  <div class="panel active" id="panel-timer-stop">
+    <div class="timer-display" id="stopwatchDisplay">00:00.00</div>
+    <div class="btn-group">
+      <button class="btn" id="swStartBtn" onclick="toggleStopwatch()">开始</button>
+      <button class="btn secondary" onclick="resetStopwatch()">重置</button>
+      <button class="btn secondary" onclick="lapStopwatch()">计次</button>
+    </div>
+    <div id="lapList" class="lap-list"></div>
+  </div>
+  <div class="panel" id="panel-timer-count">
+    <div class="field-row">
+      <div class="field"><label>分钟</label><input type="number" id="cdMin" value="5" min="0"></div>
+      <div class="field"><label>秒</label><input type="number" id="cdSec" value="0" min="0" max="59"></div>
+    </div>
+    <div class="timer-display" id="countdownDisplay">05:00</div>
+    <div class="btn-group">
+      <button class="btn" id="cdStartBtn" onclick="toggleCountdown()">开始</button>
+      <button class="btn secondary" onclick="resetCountdown()">重置</button>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+/* ============================================================
+   通用工具
+   ============================================================ */
+function roundRect(ctx,x,y,w,h,r){
+  if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,r);return;}
+  if(w<2*r)r=w/2;if(h<2*r)r=h/2;
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+function $(id){return document.getElementById(id);}
+
+/* ============================================================
+   导航
+   ============================================================ */
+const titles={home:'🧰 实用工具箱',random:'🎲 随机工具',calc:'🧮 计算器',games:'🎮 小游戏',draw:'🎨 绘图工具',timer:'⏱️ 计时器'};
+
+function showTool(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el=$('view-'+name); if(el)el.classList.add('active');
+  $('backBtn').style.display='flex';
+  $('pageTitle').textContent=titles[name]||'实用工具箱';
+  window.scrollTo(0,0);
+}
+function goHome(){
+  if(currentGameCleanup){currentGameCleanup();currentGameCleanup=null;}
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('view-home').classList.add('active');
+  $('backBtn').style.display='none';
+  $('pageTitle').textContent='🧰 实用工具箱';
+}
+function switchTab(section,tabId){
+  const view=$('view-'+section);
+  view.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tabId));
+  view.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tabId));
+  if(tabId==='draw-math')setTimeout(drawMath,100);
+}
+
+/* ============================================================
+   随机工具
+   ============================================================ */
+function genRandom(){
+  const min=parseInt($('randMin').value)||0,max=parseInt($('randMax').value)||100;
+  const count=Math.min(parseInt($('randCount').value)||1,50);
+  const lo=Math.min(min,max),hi=Math.max(min,max),res=[];
+  for(let i=0;i<count;i++)res.push(Math.floor(Math.random()*(hi-lo+1))+lo);
+  $('randResult').textContent=res.join(' , ');
+}
+
+/* ---------- 表格解析与渲染 ---------- */
+function parseTableInput(text){
+  const lines=text.split('\n').map(l=>l.replace(/\r$/,'')).filter(l=>l.trim()!=='');
+  if(!lines.length)return null;
+  const delim=lines[0].includes('\t')?'\t':',';
+  return lines.map(l=>l.split(delim).map(c=>c.trim()));
+}
+
+function renderTableTo(containerId,rows,highlightRow=-1,highlightCell=null){
+  const container=document.getElementById(containerId);
+  if(!container)return;
+  if(!rows||!rows.length){container.innerHTML='';return;}
+  const maxCols=Math.max(...rows.map(r=>r.length));
+  let html='<table style="width:100%;border-collapse:separate;border-spacing:0;font-size:0.85rem;background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,20,40,0.08);">';
+  rows.forEach((row,ri)=>{
+    const isHl=ri===highlightRow;
+    const rowBg=isHl
+      ?'background:linear-gradient(135deg,#d4f5e9,#b8ecdb);'
+      :(ri%2===0?'background:#ffffff;':'background:#f4f8fd;');
+    html+=`<tr style="${rowBg}">`;
+    for(let ci=0;ci<maxCols;ci++){
+      const val=row[ci]||'';
+      let cellStyle='padding:9px 12px;border-bottom:1px solid #e8eef7;text-align:center;white-space:nowrap;';
+      if(isHl)cellStyle+='font-weight:700;color:#1a5e45;';
+      if(highlightCell&&highlightCell[0]===ri&&highlightCell[1]===ci){
+        cellStyle+='background:#ffd166;color:#7a5c1e;font-weight:700;box-shadow:inset 0 0 0 2px #f0b400;';
+      }
+      html+=`<td style="${cellStyle}">${val||'&nbsp;'}</td>`;
+    }
+    html+='</tr>';
+  });
+  html+='</table>';
+  container.innerHTML=html;
+}
+
+/* ---------- 抽取（表格） ---------- */
+let pickRows=null;
+
+function loadPickTable(){
+  const text=$('pickTableInput').value;
+  const rows=parseTableInput(text);
+  const resultEl=$('pickResult');
+  if(!rows||!rows.length){resultEl.textContent='请输入表格数据';return;}
+  pickRows=rows;
+  renderTableTo('pickTablePreview',rows);
+  $('pickTableBtn').disabled=false;
+  $('pickCellBtn').disabled=false;
+  const maxCols=Math.max(...rows.map(r=>r.length));
+  resultEl.textContent=`已加载 ${rows.length} 行 × ${maxCols} 列，点击抽取`;
+}
+
+function pickTableRow(){
+  if(!pickRows||!pickRows.length)return;
+  const idx=Math.floor(Math.random()*pickRows.length);
+  renderTableTo('pickTablePreview',pickRows,idx);
+  $('pickResult').textContent='🎯 '+pickRows[idx].join(' | ');
+}
+
+function pickTableCell(){
+  if(!pickRows||!pickRows.length)return;
+  const cells=[];
+  pickRows.forEach((row,ri)=>row.forEach((cell,ci)=>{if(cell)cells.push([ri,ci,cell]);}));
+  if(!cells.length)return;
+  const pick=cells[Math.floor(Math.random()*cells.length)];
+  renderTableTo('pickTablePreview',pickRows,-1,[pick[0],pick[1]]);
+  $('pickResult').textContent='🎯 '+pick[2];
+}
+
+function clearPickTable(){
+  pickRows=null;
+  $('pickTableInput').value='';
+  $('pickTablePreview').innerHTML='';
+  $('pickResult').textContent='等待抽取...';
+  $('pickTableBtn').disabled=true;
+  $('pickCellBtn').disabled=true;
+}
+
+/* ---------- 滚动抽取（表格） ---------- */
+let rollRows=null;
+let rollTableTimer=null;
+
+function loadRollTable(){
+  const text=$('rollTableInput').value;
+  const rows=parseTableInput(text);
+  const resultEl=$('rollResult');
+  if(!rows||!rows.length){resultEl.textContent='请输入表格数据';return;}
+  rollRows=rows;
+  renderTableTo('rollTablePreview',rows);
+  $('rollTableBtn').disabled=false;
+  const maxCols=Math.max(...rows.map(r=>r.length));
+  resultEl.textContent=`已加载 ${rows.length} 行 × ${maxCols} 列`;
+}
+
+function startRollTable(){
+  if(!rollRows||!rollRows.length)return;
+  if(rollTableTimer)clearInterval(rollTableTimer);
+  const btn=$('rollTableBtn');
+  btn.disabled=true;
+  btn.textContent='滚动中...';
+  let count=0;
+  const maxCount=25;
+  rollTableTimer=setInterval(()=>{
+    const idx=Math.floor(Math.random()*rollRows.length);
+    renderTableTo('rollTablePreview',rollRows,idx);
+    count++;
+    if(count>=maxCount){
+      clearInterval(rollTableTimer);
+      rollTableTimer=null;
+      const finalIdx=Math.floor(Math.random()*rollRows.length);
+      renderTableTo('rollTablePreview',rollRows,finalIdx);
+      $('rollResult').textContent='🎯 '+rollRows[finalIdx].join(' | ');
+      btn.disabled=false;
+      btn.textContent='🎲 开始滚动';
+    }
+  },80);
+}
+
+function clearRollTable(){
+  if(rollTableTimer){clearInterval(rollTableTimer);rollTableTimer=null;}
+  rollRows=null;
+  $('rollTableInput').value='';
+  $('rollTablePreview').innerHTML='';
+  $('rollResult').textContent='—';
+  const btn=$('rollTableBtn');
+  btn.disabled=true;
+  btn.textContent='🎲 开始滚动';
+}
+
+/* ============================================================
+   普通计算器
+   ============================================================ */
+let calcExpr='';
+function calcInput(key){
+  const d=$('basicDisplay');
+  if(key==='C'){calcExpr='';d.textContent='0';return;}
+  if(key==='⌫'){calcExpr=calcExpr.slice(0,-1);d.textContent=calcExpr||'0';return;}
+  if(key==='='){
+    try{const r=evaluateExpr(calcExpr);d.textContent=r;calcExpr=String(r);}
+    catch(e){d.textContent='错误';calcExpr='';}
+    return;
+  }
+  calcExpr+=key;d.textContent=calcExpr;
+}
+function evaluateExpr(expr){
+  let e=expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/%/g,'/100');
+  if(!/^[\d+\-*/(). ]+$/.test(e))throw new Error('invalid');
+  const r=Function('"use strict";return('+e+')')();
+  if(typeof r!=='number'||!isFinite(r))throw new Error('invalid');
+  return Math.round(r*1e10)/1e10;
+}
+
+/* ============================================================
+   科学计算器
+   ============================================================ */
+let sciExpr='';
+function sciInput(key){
+  const d=$('sciDisplay');
+  if(key==='C'){sciExpr='';d.textContent='0';return;}
+  if(key==='⌫'){sciExpr=sciExpr.slice(0,-1);d.textContent=sciExpr||'0';return;}
+  if(key==='='){
+    try{const r=evaluateSciExpr(sciExpr);d.textContent=r;sciExpr=String(r);}
+    catch(e){d.textContent='错误';sciExpr='';}
+    return;
+  }
+  sciExpr+=key;d.textContent=sciExpr;
+}
+function evaluateSciExpr(expr){
+  let e=expr.replace(/×/g,'*').replace(/÷/g,'/');
+  e=e.replace(/sin\(/g,'Math.sin(').replace(/cos\(/g,'Math.cos(').replace(/tan\(/g,'Math.tan(');
+  e=e.replace(/log\(/g,'Math.log10(').replace(/ln\(/g,'Math.log(').replace(/sqrt\(/g,'Math.sqrt(');
+  e=e.replace(/π/g,'Math.PI').replace(/\^/g,'**');
+  const stripped=e.replace(/Math\./g,'');
+  if(/[^0-9+\-*/(). ]/.test(stripped))throw new Error('invalid');
+  const r=Function('"use strict";return('+e+')')();
+  if(typeof r!=='number'||!isFinite(r))throw new Error('invalid');
+  return Math.round(r*1e10)/1e10;
+}
+
+/* ============================================================
+   小游戏入口
+   ============================================================ */
+let currentGameCleanup=null;
+function startGame(name){
+  $('gameGrid').style.display='none';
+  $('gameArea').style.display='block';
+  const c=$('gameContainer');c.innerHTML='';
+  if(currentGameCleanup){currentGameCleanup();currentGameCleanup=null;}
+  const map={snake:initSnake,g2048:init2048,tictactoe:initTictactoe,guess:initGuess,
+    breakout:initBreakout,memory:initMemory,puzzle:initPuzzle,typing:initTyping,
+    pong:initPong,minesweeper:initMinesweeper};
+  if(map[name])currentGameCleanup=map[name](c);
+}
+function exitGame(){
+  if(currentGameCleanup){currentGameCleanup();currentGameCleanup=null;}
+  $('gameGrid').style.display='grid';
+  $('gameArea').style.display='none';
+  $('gameContainer').innerHTML='';
+}
+
+/* ============================================================
+   游戏1：贪吃蛇
+   ============================================================ */
+function initSnake(c){
+  const gs=20,cell=20;
+  const cv=document.createElement('canvas');cv.width=cv.height=gs*cell;
+  cv.style.cssText='max-width:100%;border-radius:12px;background:#1e2e44;touch-action:none;';
+  c.appendChild(cv);const ctx=cv.getContext('2d');
+  const sd=document.createElement('div');sd.style.cssText='text-align:center;font-size:1.1rem;margin:10px 0;font-weight:600;color:#2d4b7c;';
+  sd.textContent='得分: 0';c.appendChild(sd);
+  let snake=[{x:10,y:10}],dir={x:0,y:-1},nextDir={x:0,y:-1},food={x:15,y:10},score=0,running=true,timer=null;
+  function placeFood(){do{food={x:Math.floor(Math.random()*gs),y:Math.floor(Math.random()*gs)};}
+    while(snake.some(s=>s.x===food.x&&s.y===food.y));}
+  function draw(){
+    ctx.fillStyle='#1e2e44';ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.strokeStyle='rgba(255,255,255,0.05)';
+    for(let i=0;i<=gs;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,cv.height);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(0,i*cell);ctx.lineTo(cv.width,i*cell);ctx.stroke();}
+    ctx.fillStyle='#ff6b6b';ctx.beginPath();ctx.arc(food.x*cell+cell/2,food.y*cell+cell/2,cell/2-2,0,Math.PI*2);ctx.fill();
+    snake.forEach((s,i)=>{
+      const g=ctx.createLinearGradient(s.x*cell,s.y*cell,(s.x+1)*cell,(s.y+1)*cell);
+      if(i===0){g.addColorStop(0,'#9f8eff');g.addColorStop(1,'#6a5acd');}
+      else{g.addColorStop(0,'#62c9a8');g.addColorStop(1,'#2c9c7c');}
+      ctx.fillStyle=g;roundRect(ctx,s.x*cell+1,s.y*cell+1,cell-2,cell-2,4);ctx.fill();
+    });
+  }
+  function move(){
+    dir={...nextDir};
+    const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+    if(h.x<0||h.x>=gs||h.y<0||h.y>=gs){over();return;}
+    if(snake.some(s=>s.x===h.x&&s.y===h.y)){over();return;}
+    snake.unshift(h);
+    if(h.x===food.x&&h.y===food.y){score+=10;sd.textContent='得分: '+score;placeFood();}
+    else snake.pop();
+    draw();
+  }
+  function over(){
+    running=false;clearInterval(timer);
+    ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.fillStyle='white';ctx.font='bold 28px sans-serif';ctx.textAlign='center';
+    ctx.fillText('游戏结束',cv.width/2,cv.height/2-20);
+    ctx.font='18px sans-serif';ctx.fillText('得分: '+score,cv.width/2,cv.height/2+20);
+    ctx.fillText('点击重新开始',cv.width/2,cv.height/2+55);
+    cv.onclick=()=>{snake=[{x:10,y:10}];dir={x:0,y:-1};nextDir={x:0,y:-1};score=0;running=true;
+      sd.textContent='得分: 0';placeFood();draw();timer=setInterval(move,120);};
+  }
+  function key(e){
+    if(!running)return;
+    if(e.key==='ArrowUp'&&dir.y!==1)nextDir={x:0,y:-1};
+    else if(e.key==='ArrowDown'&&dir.y!==-1)nextDir={x:0,y:1};
+    else if(e.key==='ArrowLeft'&&dir.x!==1)nextDir={x:-1,y:0};
+    else if(e.key==='ArrowRight'&&dir.x!==-1)nextDir={x:1,y:0};
+    e.preventDefault();
+  }
+  let ts=null;
+  cv.addEventListener('touchstart',e=>{ts={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+  cv.addEventListener('touchend',e=>{
+    if(!ts||!running)return;
+    const dx=e.changedTouches[0].clientX-ts.x,dy=e.changedTouches[0].clientY-ts.y;
+    if(Math.abs(dx)>Math.abs(dy)){
+      if(dx>20&&dir.x!==-1)nextDir={x:1,y:0};else if(dx<-20&&dir.x!==1)nextDir={x:-1,y:0};}
+    else{if(dy>20&&dir.y!==-1)nextDir={x:0,y:1};else if(dy<-20&&dir.y!==1)nextDir={x:0,y:-1};}
+    ts=null;},{passive:true});
+  document.addEventListener('keydown',key);
+  placeFood();draw();timer=setInterval(move,120);
+  return()=>{clearInterval(timer);document.removeEventListener('keydown',key);};
+}
+
+/* ============================================================
+   游戏2：2048
+   ============================================================ */
+function init2048(c){
+  const sz=4;let board=Array(sz).fill().map(()=>Array(sz).fill(0)),score=0;
+  const w=document.createElement('div');w.style.cssText='max-width:420px;margin:0 auto;';c.appendChild(w);
+  const sd=document.createElement('div');sd.style.cssText='text-align:center;font-size:1.2rem;font-weight:700;margin:10px 0;color:#2d4b7c;';w.appendChild(sd);
+  const g=document.createElement('div');g.style.cssText=`display:grid;grid-template-columns:repeat(${sz},1fr);gap:10px;background:#bbada0;padding:10px;border-radius:12px;aspect-ratio:1;`;w.appendChild(g);
+  const cells=[];for(let i=0;i<sz*sz;i++){const e=document.createElement('div');
+    e.style.cssText='background:rgba(238,228,218,0.35);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;transition:all .15s;';
+    g.appendChild(e);cells.push(e);}
+  const colors={2:['#eee4da','#776e65'],4:['#ede0c8','#776e65'],8:['#f2b179','#f9f6f2'],16:['#f59563','#f9f6f2'],
+    32:['#f67c5f','#f9f6f2'],64:['#f65e3b','#f9f6f2'],128:['#edcf72','#f9f6f2'],256:['#edcc61','#f9f6f2'],
+    512:['#edc850','#f9f6f2'],1024:['#edc53f','#f9f6f2'],2048:['#edc22e','#f9f6f2']};
+  function render(){sd.textContent='得分: '+score;
+    for(let i=0;i<sz;i++)for(let j=0;j<sz;j++){const v=board[i][j],e=cells[i*sz+j];
+      if(v===0){e.textContent='';e.style.background='rgba(238,228,218,0.35)';e.style.color='transparent';}
+      else{e.textContent=v;const[bg,fg]=colors[v]||['#3c3a32','#f9f6f2'];
+        e.style.background=bg;e.style.color=fg;e.style.fontSize=v>=1000?'1.2rem':v>=100?'1.4rem':'1.7rem';}}}
+  function add(){const emp=[];for(let i=0;i<sz;i++)for(let j=0;j<sz;j++)if(board[i][j]===0)emp.push([i,j]);
+    if(!emp.length)return;const[i,j]=emp[Math.floor(Math.random()*emp.length)];board[i][j]=Math.random()<0.9?2:4;}
+  function slide(row){const arr=row.filter(v=>v);const r=[];
+    for(let i=0;i<arr.length;i++){if(arr[i]===arr[i+1]){r.push(arr[i]*2);score+=arr[i]*2;i++;}else r.push(arr[i]);}
+    while(r.length<sz)r.push(0);return r;}
+  function move(d){const old=JSON.stringify(board);
+    if(d==='left')for(let i=0;i<sz;i++)board[i]=slide(board[i]);
+    else if(d==='right')for(let i=0;i<sz;i++)board[i]=slide(board[i].reverse()).reverse();
+    else if(d==='up')for(let j=0;j<sz;j++){const col=board.map(r=>r[j]);const nc=slide(col);
+      for(let i=0;i<sz;i++)board[i][j]=nc[i];}
+    else if(d==='down')for(let j=0;j<sz;j++){const col=board.map(r=>r[j]).reverse();const nc=slide(col).reverse();
+      for(let i=0;i<sz;i++)board[i][j]=nc[i];}
+    if(JSON.stringify(board)!==old){add();render();}
+    if(isOver())setTimeout(()=>alert('游戏结束！得分: '+score),100);}
+  function isOver(){for(let i=0;i<sz;i++)for(let j=0;j<sz;j++){
+    if(board[i][j]===0)return false;if(i<sz-1&&board[i][j]===board[i+1][j])return false;
+    if(j<sz-1&&board[i][j]===board[i][j+1])return false;}return true;}
+  function key(e){const m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};
+    if(m[e.key]){e.preventDefault();move(m[e.key]);}}
+  let tx=null,ty=null;
+  g.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+  g.addEventListener('touchend',e=>{if(tx===null)return;
+    const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>Math.abs(dy)){if(dx>30)move('right');else if(dx<-30)move('left');}
+    else{if(dy>30)move('down');else if(dy<-30)move('up');}tx=ty=null;},{passive:true});
+  document.addEventListener('keydown',key);add();add();render();
+  return()=>document.removeEventListener('keydown',key);
+}
+
+/* ============================================================
+   游戏3：井字棋
+   ============================================================ */
+function initTictactoe(c){
+  let board=Array(9).fill(''),cur='X',over=false;
+  const w=document.createElement('div');w.style.cssText='max-width:320px;margin:0 auto;text-align:center;';c.appendChild(w);
+  const st=document.createElement('div');st.style.cssText='font-size:1.2rem;font-weight:700;margin:15px 0;color:#2d4b7c;';st.textContent='轮到 X';w.appendChild(st);
+  const g=document.createElement('div');g.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;';w.appendChild(g);
+  const cells=[];
+  for(let i=0;i<9;i++){const e=document.createElement('div');
+    e.style.cssText='aspect-ratio:1;background:#f0f4fa;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;cursor:pointer;transition:.15s;user-select:none;';
+    e.onclick=()=>play(i);g.appendChild(e);cells.push(e);}
+  const rb=document.createElement('button');rb.className='btn';rb.style.marginTop='15px';rb.textContent='重新开始';rb.onclick=reset;w.appendChild(rb);
+  function play(i){if(over||board[i])return;board[i]=cur;cells[i].textContent=cur;
+    cells[i].style.color=cur==='X'?'#e65c4f':'#2b5876';
+    const win=check();if(win){over=true;st.textContent=win+' 获胜！';st.style.color='#2c9c7c';}
+    else if(board.every(v=>v)){over=true;st.textContent='平局！';}
+    else{cur=cur==='X'?'O':'X';st.textContent='轮到 '+cur;}}
+  function check(){const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for(const[a,b,d]of L)if(board[a]&&board[a]===board[b]&&board[a]===board[d])return board[a];return null;}
+  function reset(){board=Array(9).fill('');cur='X';over=false;st.textContent='轮到 X';st.style.color='#2d4b7c';
+    cells.forEach(e=>{e.textContent='';e.style.background='#f0f4fa';});}
+  return()=>{};
+}
+
+/* ============================================================
+   游戏4：猜数字
+   ============================================================ */
+function initGuess(c){
+  const target=Math.floor(Math.random()*100)+1;let attempts=0;
+  const w=document.createElement('div');w.style.cssText='max-width:340px;margin:0 auto;text-align:center;';c.appendChild(w);
+  w.innerHTML=`<p style="margin-bottom:15px;color:#5b6f88;">猜一个 1-100 之间的数字</p>
+    <input type="number" id="gInput" min="1" max="100" style="width:100%;padding:12px;font-size:1.2rem;border-radius:12px;border:2px solid #d0dceb;text-align:center;outline:none;">
+    <button class="btn" id="gBtn" style="margin-top:12px;">猜！</button>
+    <div id="gMsg" style="margin-top:15px;font-size:1.1rem;font-weight:600;min-height:30px;"></div>
+    <div id="gAtt" style="margin-top:8px;color:#7c93ae;font-size:.9rem;"></div>`;
+  const inp=w.querySelector('#gInput'),btn=w.querySelector('#gBtn'),msg=w.querySelector('#gMsg'),att=w.querySelector('#gAtt');
+  function guess(){const v=parseInt(inp.value);
+    if(isNaN(v)||v<1||v>100){msg.textContent='请输入 1-100 的数字';msg.style.color='#e65c4f';return;}
+    attempts++;
+    if(v===target){msg.textContent=`🎉 猜对了！答案就是 ${target}`;msg.style.color='#2c9c7c';btn.disabled=true;inp.disabled=true;}
+    else if(v<target){msg.textContent='太小了 ↑';msg.style.color='#b25c9c';}
+    else{msg.textContent='太大了 ↓';msg.style.color='#b25c9c';}
+    att.textContent=`已猜 ${attempts} 次`;}
+  btn.onclick=guess;inp.onkeydown=e=>{if(e.key==='Enter')guess();};
+  return()=>{};
+}
+
+/* ============================================================
+   游戏5：打砖块
+   ============================================================ */
+function initBreakout(c){
+  const cv=document.createElement('canvas');cv.width=480;cv.height=360;
+  cv.style.cssText='max-width:100%;border-radius:12px;background:#1e2e44;display:block;margin:0 auto;touch-action:none;';
+  c.appendChild(cv);const ctx=cv.getContext('2d');
+  const info=document.createElement('div');info.style.cssText='text-align:center;margin:10px 0;color:#2d4b7c;font-weight:600;';c.appendChild(info);
+  let score=0,lives=3,paddle={x:200,y:340,w:80,h:10},ball={x:240,y:320,r:7,dx:3,dy:-3};
+  let bricks=[],running=true,animId=null,rp=false,lp=false;
+  const cols=8,rows=4,bw=52,bh=18,bp=5,boX=15,boY=30;
+  function resetBricks(){bricks=[];for(let i=0;i<rows;i++)for(let j=0;j<cols;j++)
+    bricks.push({x:boX+j*(bw+bp),y:boY+i*(bh+bp),w:bw,h:bh,alive:true,color:`hsl(${200+i*30},70%,${60-i*5}%)`});}
+  function draw(){ctx.fillStyle='#1e2e44';ctx.fillRect(0,0,cv.width,cv.height);
+    bricks.forEach(b=>{if(b.alive){ctx.fillStyle=b.color;roundRect(ctx,b.x,b.y,b.w,b.h,4);ctx.fill();}});
+    const g=ctx.createLinearGradient(paddle.x,paddle.y,paddle.x+paddle.w,paddle.y);
+    g.addColorStop(0,'#9f8eff');g.addColorStop(1,'#6a5acd');ctx.fillStyle=g;
+    roundRect(ctx,paddle.x,paddle.y,paddle.w,paddle.h,5);ctx.fill();
+    ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fillStyle='#ffd166';ctx.fill();}
+  function update(){if(!running)return;
+    if(rp&&paddle.x+paddle.w<cv.width)paddle.x+=6;
+    if(lp&&paddle.x>0)paddle.x-=6;
+    ball.x+=ball.dx;ball.y+=ball.dy;
+    if(ball.x+ball.r>cv.width||ball.x-ball.r<0)ball.dx=-ball.dx;
+    if(ball.y-ball.r<0)ball.dy=-ball.dy;
+    if(ball.y+ball.r>paddle.y&&ball.y-ball.r<paddle.y+paddle.h&&ball.x>paddle.x&&ball.x<paddle.x+paddle.w){
+      ball.dy=-Math.abs(ball.dy);ball.dx=6*((ball.x-paddle.x)/paddle.w-0.5);}
+    bricks.forEach(b=>{if(b.alive&&ball.x+ball.r>b.x&&ball.x-ball.r<b.x+b.w&&ball.y+ball.r>b.y&&ball.y-ball.r<b.y+b.h){
+      b.alive=false;score+=10;info.textContent=`得分: ${score} | 生命: ${lives}`;ball.dy=-ball.dy;}});
+    if(ball.y+ball.r>cv.height){lives--;
+      if(lives<=0){running=false;draw();ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(0,0,cv.width,cv.height);
+        ctx.fillStyle='white';ctx.font='bold 26px sans-serif';ctx.textAlign='center';
+        ctx.fillText('游戏结束',cv.width/2,cv.height/2-10);ctx.font='16px sans-serif';
+        ctx.fillText('得分: '+score+' · 点击重开',cv.width/2,cv.height/2+25);cv.onclick=restart;return;}
+      info.textContent=`得分: ${score} | 生命: ${lives}`;ball.x=cv.width/2;ball.y=cv.height-40;
+      ball.dx=3*(Math.random()>.5?1:-1);ball.dy=-3;paddle.x=(cv.width-paddle.w)/2;}
+    if(bricks.every(b=>!b.alive)){running=false;draw();ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(0,0,cv.width,cv.height);
+      ctx.fillStyle='#ffd166';ctx.font='bold 26px sans-serif';ctx.textAlign='center';
+      ctx.fillText('🎉 胜利！',cv.width/2,cv.height/2);cv.onclick=restart;return;}
+    draw();animId=requestAnimationFrame(update);}
+  function restart(){score=0;lives=3;paddle.x=(cv.width-paddle.w)/2;ball.x=cv.width/2;ball.y=cv.height-40;
+    ball.dx=3;ball.dy=-3;running=true;info.textContent='得分: 0 | 生命: 3';resetBricks();
+    if(animId)cancelAnimationFrame(animId);update();}
+  function kd(e){if(e.key==='ArrowRight')rp=true;if(e.key==='ArrowLeft')lp=true;}
+  function ku(e){if(e.key==='ArrowRight')rp=false;if(e.key==='ArrowLeft')lp=false;}
+  function mm(e){const r=cv.getBoundingClientRect();const sx=cv.width/r.width;
+    paddle.x=Math.max(0,Math.min(cv.width-paddle.w,(e.clientX-r.left)*sx-paddle.w/2));}
+  document.addEventListener('keydown',kd);document.addEventListener('keyup',ku);
+  cv.addEventListener('mousemove',mm);
+  cv.addEventListener('touchmove',e=>{const r=cv.getBoundingClientRect();const sx=cv.width/r.width;
+    paddle.x=Math.max(0,Math.min(cv.width-paddle.w,(e.touches[0].clientX-r.left)*sx-paddle.w/2));e.preventDefault();},{passive:false});
+  resetBricks();update();
+  return()=>{if(animId)cancelAnimationFrame(animId);document.removeEventListener('keydown',kd);document.removeEventListener('keyup',ku);};
+}
+
+/* ============================================================
+   游戏6：记忆翻牌
+   ============================================================ */
+function initMemory(c){
+  const syms=['🍎','🍌','🍇','🍉','🍓','🍒','🥝','🍑'];
+  let deck,flipped,matched,moves,lock;
+  const w=document.createElement('div');w.style.cssText='max-width:360px;margin:0 auto;text-align:center;';c.appendChild(w);
+  const info=document.createElement('div');info.style.cssText='font-size:1.1rem;font-weight:600;margin:10px 0;color:#2d4b7c;';w.appendChild(info);
+  const g=document.createElement('div');g.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:8px;';w.appendChild(g);
+  const rb=document.createElement('button');rb.className='btn';rb.style.marginTop='15px';rb.textContent='重新开始';rb.onclick=init;w.appendChild(rb);
+  function init(){deck=[...syms,...syms].sort(()=>Math.random()-.5);flipped=[];matched=0;moves=0;lock=false;g.innerHTML='';
+    deck.forEach(sym=>{const e=document.createElement('div');
+      e.style.cssText='aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;cursor:pointer;transition:all .3s;background:linear-gradient(135deg,#4b7bb5,#2d4b7c);color:transparent;user-select:none;';
+      e.textContent=sym;e.dataset.sym=sym;e.onclick=()=>flip(e);g.appendChild(e);});
+    info.textContent='翻牌配对！步数: 0';}
+  function flip(e){if(lock||e.dataset.matched||flipped.includes(e))return;
+    e.style.background='white';e.style.color='#1e2e44';e.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';
+    flipped.push(e);
+    if(flipped.length===2){moves++;info.textContent=`翻牌配对！步数: ${moves}`;lock=true;
+      if(flipped[0].dataset.sym===flipped[1].dataset.sym){
+        flipped[0].dataset.matched='1';flipped[1].dataset.matched='1';
+        flipped[0].style.background='#d4f5e9';flipped[1].style.background='#d4f5e9';
+        flipped=[];lock=false;matched++;
+        if(matched===syms.length)setTimeout(()=>alert(`🎉 全部配对！共用了 ${moves} 步`),200);
+      }else{setTimeout(()=>{
+        flipped[0].style.background='linear-gradient(135deg,#4b7bb5,#2d4b7c)';flipped[0].style.color='transparent';
+        flipped[1].style.background='linear-gradient(135deg,#4b7bb5,#2d4b7c)';flipped[1].style.color='transparent';
+        flipped[0].style.boxShadow='none';flipped[1].style.boxShadow='none';
+        flipped=[];lock=false;},700);}}}
+  init();return()=>{};
+}
+
+/* ============================================================
+   游戏7：数字华容道
+   ============================================================ */
+function initPuzzle(c){
+  const sz=3;let board,empty,moves;
+  const w=document.createElement('div');w.style.cssText='max-width:320px;margin:0 auto;text-align:center;';c.appendChild(w);
+  const info=document.createElement('div');info.style.cssText='font-size:1.1rem;font-weight:600;margin:10px 0;color:#2d4b7c;';w.appendChild(info);
+  const g=document.createElement('div');g.style.cssText=`display:grid;grid-template-columns:repeat(${sz},1fr);gap:6px;background:#2d4b7c;padding:6px;border-radius:12px;aspect-ratio:1;`;w.appendChild(g);
+  const rb=document.createElement('button');rb.className='btn';rb.style.marginTop='15px';rb.textContent='重新开始';rb.onclick=init;w.appendChild(rb);
+  function init(){board=Array.from({length:sz*sz},(_,i)=>i);
+    do{board.sort(()=>Math.random()-.5);}while(!solvable()||solved());
+    empty=board.indexOf(0);moves=0;render();}
+  function solvable(){let inv=0;const a=board.filter(v=>v);
+    for(let i=0;i<a.length;i++)for(let j=i+1;j<a.length;j++)if(a[i]>a[j])inv++;return inv%2===0;}
+  function solved(){for(let i=0;i<sz*sz-1;i++)if(board[i]!==i+1)return false;return board[sz*sz-1]===0;}
+  function render(){g.innerHTML='';board.forEach((v,i)=>{
+    const e=document.createElement('div');const emp=v===0;
+    e.style.cssText=`aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;cursor:${emp?'default':'pointer'};transition:.15s;user-select:none;${emp?'background:transparent;':'background:linear-gradient(135deg,#e9f0f8,#d0dceb);color:#2d4b7c;'}`;
+    if(!emp){e.textContent=v;e.onclick=()=>move(i);}
+    g.appendChild(e);});
+    info.textContent=`步数: ${moves}`;}
+  function move(i){const r=Math.floor(i/sz),c=i%sz,er=Math.floor(empty/sz),ec=empty%sz;
+    if(Math.abs(r-er)+Math.abs(c-ec)===1){[board[i],board[empty]]=[board[empty],board[i]];empty=i;moves++;render();
+      if(solved())setTimeout(()=>alert(`🎉 完成！共 ${moves} 步`),200);}}
+  init();return()=>{};
+}
+
+/* ============================================================
+   游戏8：打字测速
+   ============================================================ */
+function initTyping(c){
+  const words=['apple','banana','cherry','dragon','elephant','flower','garden','house','island','jungle',
+    'kitten','lemon','mountain','night','ocean','pencil','queen','river','sunset','tiger',
+    'umbrella','village','water','yellow','zebra','bridge','cloud','dream','energy','forest'];
+  let cur='',startTime=null,correct=0,running=false,ti=null;
+  const w=document.createElement('div');w.style.cssText='max-width:500px;margin:0 auto;text-align:center;';c.appendChild(w);
+  w.innerHTML=`<div id="tWord" style="font-size:2rem;font-weight:700;color:#2d4b7c;margin:20px 0;letter-spacing:2px;min-height:50px;">准备好了吗？</div>
+    <input type="text" id="tInput" placeholder="在这里输入..." style="width:100%;padding:14px;font-size:1.2rem;border-radius:12px;border:2px solid #d0dceb;text-align:center;outline:none;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <div id="tStats" style="margin-top:15px;color:#5b6f88;font-size:1rem;">输入任意字符开始计时</div>
+    <button class="btn" id="tReset" style="margin-top:12px;">重新开始</button>`;
+  const wordEl=w.querySelector('#tWord'),inp=w.querySelector('#tInput'),stats=w.querySelector('#tStats'),rb=w.querySelector('#tReset');
+  function newWord(){cur=words[Math.floor(Math.random()*words.length)];wordEl.textContent=cur;inp.value='';}
+  function start(){if(running)return;running=true;startTime=Date.now();correct=0;newWord();inp.focus();
+    if(ti)clearInterval(ti);ti=setInterval(()=>{if(!startTime)return;
+      const el=(Date.now()-startTime)/1000;stats.textContent=`时间: ${el.toFixed(1)}s | 正确: ${correct} | WPM: ${el>0?Math.round(correct/el*60):0}`;},100);}
+  inp.addEventListener('input',()=>{if(!running&&inp.value.length>0)start();if(!running)return;
+    if(inp.value===cur){correct++;newWord();}});
+  rb.onclick=()=>{running=false;startTime=null;correct=0;if(ti)clearInterval(ti);
+    stats.textContent='输入任意字符开始计时';wordEl.textContent='准备好了吗？';inp.value='';inp.focus();};
+  return()=>{if(ti)clearInterval(ti);};
+}
+
+/* ============================================================
+   游戏9：乒乓球
+   ============================================================ */
+function initPong(c){
+  const cv=document.createElement('canvas');cv.width=480;cv.height=360;
+  cv.style.cssText='max-width:100%;border-radius:12px;background:#1e2e44;display:block;margin:0 auto;touch-action:none;';
+  c.appendChild(cv);const ctx=cv.getContext('2d');
+  const info=document.createElement('div');info.style.cssText='text-align:center;margin:10px 0;color:#2d4b7c;font-weight:600;font-size:1.1rem;';c.appendChild(info);
+  const pw=10,ph=70;let py=cv.height/2-ph/2,ay=cv.height/2-ph/2;
+  let ball={x:cv.width/2,y:cv.height/2,r:7,dx:4,dy:3},ps=0,as=0,aid=null,running=true;
+  function draw(){ctx.fillStyle='#1e2e44';ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.setLineDash([8,8]);ctx.strokeStyle='rgba(255,255,255,0.15)';
+    ctx.beginPath();ctx.moveTo(cv.width/2,0);ctx.lineTo(cv.width/2,cv.height);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#9f8eff';roundRect(ctx,10,py,pw,ph,5);ctx.fill();
+    ctx.fillStyle='#ff6b6b';roundRect(ctx,cv.width-20,ay,pw,ph,5);ctx.fill();
+    ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fillStyle='#ffd166';ctx.fill();}
+  function reset(){ball.x=cv.width/2;ball.y=cv.height/2;
+    ball.dx=4*(Math.random()>.5?1:-1);ball.dy=3*(Math.random()>.5?1:-1);}
+  function update(){if(!running)return;
+    ball.x+=ball.dx;ball.y+=ball.dy;
+    if(ball.y+ball.r>cv.height||ball.y-ball.r<0)ball.dy=-ball.dy;
+    if(ball.x-ball.r<20&&ball.y>py&&ball.y<py+ph){ball.dx=Math.abs(ball.dx)*1.02;ball.dy=8*((ball.y-py)/ph-.5);}
+    if(ball.x+ball.r>cv.width-20&&ball.y>ay&&ball.y<ay+ph){ball.dx=-Math.abs(ball.dx)*1.02;ball.dy=8*((ball.y-ay)/ph-.5);}
+    if(ball.x<0){as++;info.textContent=`你 ${ps} : ${as} 电脑`;reset();}
+    else if(ball.x>cv.width){ps++;info.textContent=`你 ${ps} : ${as} 电脑`;reset();}
+    const ac=ay+ph/2;
+    if(ball.x>cv.width/2){if(ac<ball.y-10)ay+=4;else if(ac>ball.y+10)ay-=4;}
+    else{if(ac<cv.height/2-10)ay+=2;else if(ac>cv.height/2+10)ay-=2;}
+    ay=Math.max(0,Math.min(cv.height-ph,ay));
+    draw();aid=requestAnimationFrame(update);}
+  function mm(e){const r=cv.getBoundingClientRect();const sy=cv.height/r.height;
+    py=Math.max(0,Math.min(cv.height-ph,(e.clientY-r.top)*sy-ph/2));}
+  cv.addEventListener('mousemove',mm);
+  cv.addEventListener('touchmove',e=>{const r=cv.getBoundingClientRect();const sy=cv.height/r.height;
+    py=Math.max(0,Math.min(cv.height-ph,(e.touches[0].clientY-r.top)*sy-ph/2));e.preventDefault();},{passive:false});
+  update();
+  return()=>{if(aid)cancelAnimationFrame(aid);};
+}
+
+/* ============================================================
+   游戏10：扫雷
+   ============================================================ */
+function initMinesweeper(c){
+  const sz=9,mines=10;let board,revealed,flagged,over,won,flags;
+  const w=document.createElement('div');w.style.cssText='max-width:400px;margin:0 auto;text-align:center;';c.appendChild(w);
+  const info=document.createElement('div');info.style.cssText='font-size:1.1rem;font-weight:600;margin:10px 0;color:#2d4b7c;';w.appendChild(info);
+  const g=document.createElement('div');g.style.cssText=`display:grid;grid-template-columns:repeat(${sz},1fr);gap:3px;background:#2d4b7c;padding:5px;border-radius:10px;`;w.appendChild(g);
+  const rb=document.createElement('button');rb.className='btn';rb.style.marginTop='15px';rb.textContent='重新开始';rb.onclick=init;w.appendChild(rb);
+  function init(){board=Array(sz*sz).fill(0);revealed=Array(sz*sz).fill(false);flagged=Array(sz*sz).fill(false);
+    over=false;won=false;flags=0;
+    let placed=0;while(placed<mines){const i=Math.floor(Math.random()*sz*sz);
+      if(board[i]!==-1){board[i]=-1;placed++;}}
+    for(let i=0;i<sz*sz;i++){if(board[i]===-1)continue;
+      const r=Math.floor(i/sz),cc=i%sz;let cnt=0;
+      for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=cc+dc;
+        if(nr>=0&&nr<sz&&nc>=0&&nc<sz&&board[nr*sz+nc]===-1)cnt++;}
+      board[i]=cnt;}
+    render();}
+  function render(){g.innerHTML='';
+    for(let i=0;i<sz*sz;i++){const e=document.createElement('div');
+      let txt='',bg='#b8cbe0',col='#1e2e44';
+      if(revealed[i]){bg='#e9f0f8';
+        if(board[i]===-1){txt='💣';bg='#ffb3b3';}
+        else if(board[i]>0){txt=board[i];col=['','#2b5876','#2c9c7c','#e65c4f','#6a5acd','#8b4513','#008080','#333','#666'][board[i]];}}
+      else if(flagged[i])txt='🚩';
+      e.style.cssText=`aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;cursor:pointer;user-select:none;background:${bg};color:${col};transition:.1s;`;
+      e.textContent=txt;e.onclick=()=>reveal(i);
+      e.oncontextmenu=ev=>{ev.preventDefault();toggleFlag(i);};
+      let pt;e.addEventListener('touchstart',ev=>{pt=setTimeout(()=>{ev.preventDefault();toggleFlag(i);},500);},{passive:true});
+      e.addEventListener('touchend',()=>clearTimeout(pt));e.addEventListener('touchmove',()=>clearTimeout(pt));
+      g.appendChild(e);}
+    info.textContent=`💣 ${mines-flags} | ${over?(won?'🎉 胜利':'💥 失败'):'进行中'}`;}
+  function reveal(i){if(over||revealed[i]||flagged[i])return;revealed[i]=true;
+    if(board[i]===-1){over=true;revealed=revealed.map((v,idx)=>v||board[idx]===-1);render();
+      setTimeout(()=>alert('💥 踩到地雷了！'),100);return;}
+    if(board[i]===0){const r=Math.floor(i/sz),cc=i%sz;
+      for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=cc+dc;
+        if(nr>=0&&nr<sz&&nc>=0&&nc<sz)reveal(nr*sz+nc);}}
+    checkWin();render();}
+  function toggleFlag(i){if(over||revealed[i])return;flagged[i]=!flagged[i];flags+=flagged[i]?1:-1;render();}
+  function checkWin(){if(revealed.every((v,i)=>v||board[i]===-1)){over=true;won=true;render();
+    setTimeout(()=>alert('🎉 扫雷成功！'),100);}}
+  init();return()=>{};
+}
+
+/* ============================================================
+   绘图工具 - 数学画图
+   ============================================================ */
+function drawMath(){
+  const cv=$('mathCanvas'),ctx=cv.getContext('2d');
+  const funcStr=$('mathFunc').value.trim()||'sin(x)';
+  const w=cv.width,h=cv.height;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+  const scale=40,cx=w/2,cy=h/2;
+  ctx.strokeStyle='#e0e7f0';ctx.lineWidth=1;
+  for(let x=cx%scale;x<w;x+=scale){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let y=cy%scale;y<h;y+=scale){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  ctx.strokeStyle='#5b6f88';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(w,cy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,0);ctx.lineTo(cx,h);ctx.stroke();
+  let fn;
+  try{
+    let expr=funcStr.replace(/\^/g,'**').replace(/sin/g,'Math.sin').replace(/cos/g,'Math.cos')
+      .replace(/tan/g,'Math.tan').replace(/sqrt/g,'Math.sqrt').replace(/log/g,'Math.log10')
+      .replace(/ln/g,'Math.log').replace(/abs/g,'Math.abs').replace(/π/g,'Math.PI').replace(/pi/gi,'Math.PI');
+    fn=new Function('x','return '+expr);fn(0);
+  }catch(e){ctx.fillStyle='#e65c4f';ctx.font='16px sans-serif';ctx.fillText('函数格式错误',20,30);return;}
+  ctx.strokeStyle='#4b7bb5';ctx.lineWidth=2.5;ctx.beginPath();
+  let started=false;
+  for(let px=0;px<w;px++){const x=(px-cx)/scale;let y;try{y=fn(x);}catch{y=NaN;}
+    if(!isFinite(y)||isNaN(y)){started=false;continue;}
+    const py=cy-y*scale;
+    if(!started){ctx.moveTo(px,py);started=true;}else ctx.lineTo(px,py);}
+  ctx.stroke();
+}
+
+/* ============================================================
+   绘图工具 - 美术画图
+   ============================================================ */
+function initArt(){
+  const cv=$('artCanvas');if(!cv)return;const ctx=cv.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+  let drawing=false,lastX=0,lastY=0;
+  function pos(e){const r=cv.getBoundingClientRect();const sx=cv.width/r.width,sy=cv.height/r.height;
+    let cx,cy;if(e.touches){cx=e.touches[0].clientX;cy=e.touches[0].clientY;}else{cx=e.clientX;cy=e.clientY;}
+    return{x:(cx-r.left)*sx,y:(cy-r.top)*sy};}
+  function start(e){e.preventDefault();drawing=true;const p=pos(e);lastX=p.x;lastY=p.y;}
+  function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);
+    ctx.strokeStyle=$('brushColor').value;ctx.lineWidth=$('brushSize').value;
+    ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(p.x,p.y);ctx.stroke();
+    lastX=p.x;lastY=p.y;}
+  function end(){drawing=false;}
+  cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',move);
+  cv.addEventListener('mouseup',end);cv.addEventListener('mouseleave',end);
+  cv.addEventListener('touchstart',start,{passive:false});
+  cv.addEventListener('touchmove',move,{passive:false});
+  cv.addEventListener('touchend',end);
+}
+function clearArt(){const cv=$('artCanvas');const ctx=cv.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);}
+function saveArt(){const cv=$('artCanvas');const a=document.createElement('a');
+  a.download='我的画作.png';a.href=cv.toDataURL();a.click();}
+
+/* ============================================================
+   计时器 - 秒表
+   ============================================================ */
+let swStart=0,swElapsed=0,swInterval=null,swRunning=false,laps=[];
+function toggleStopwatch(){
+  const btn=$('swStartBtn');
+  if(swRunning){swRunning=false;swElapsed+=Date.now()-swStart;clearInterval(swInterval);swInterval=null;btn.textContent='继续';}
+  else{swRunning=true;swStart=Date.now();swInterval=setInterval(updateStopwatch,30);btn.textContent='暂停';}
+}
+function updateStopwatch(){const t=swElapsed+(swRunning?Date.now()-swStart:0);
+  $('stopwatchDisplay').textContent=fmtTime(t);}
+function resetStopwatch(){swRunning=false;clearInterval(swInterval);swInterval=null;swElapsed=0;laps=[];
+  $('stopwatchDisplay').textContent='00:00.00';$('swStartBtn').textContent='开始';$('lapList').innerHTML='';}
+function lapStopwatch(){if(!swRunning&&swElapsed===0)return;
+  const t=swElapsed+(swRunning?Date.now()-swStart:0);laps.push(t);
+  const list=$('lapList'),item=document.createElement('div');
+  item.style.cssText='padding:8px 12px;border-bottom:1px solid #e9f0f8;display:flex;justify-content:space-between;font-size:.9rem;';
+  item.innerHTML=`<span style="color:#5b6f88;">计次 ${laps.length}</span><span style="font-weight:600;color:#2d4b7c;">${fmtTime(t)}</span>`;
+  list.appendChild(item);list.scrollTop=list.scrollHeight;}
+function fmtTime(ms){const m=Math.floor(ms/60000),s=Math.floor(ms%60000/1000),cs=Math.floor(ms%1000/10);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;}
+
+/* ============================================================
+   计时器 - 倒计时
+   ============================================================ */
+let cdRemaining=0,cdInterval=null,cdRunning=false;
+function toggleCountdown(){
+  const btn=$('cdStartBtn');
+  if(cdRunning){cdRunning=false;clearInterval(cdInterval);cdInterval=null;btn.textContent='继续';return;}
+  if(cdRemaining<=0){const m=parseInt($('cdMin').value)||0,s=parseInt($('cdSec').value)||0;
+    cdRemaining=(m*60+s)*1000;}
+  if(cdRemaining<=0)return;
+  cdRunning=true;const st=Date.now(),sr=cdRemaining;btn.textContent='暂停';
+  cdInterval=setInterval(()=>{
+    const el=Date.now()-st;cdRemaining=sr-el;
+    if(cdRemaining<=0){cdRemaining=0;clearInterval(cdInterval);cdInterval=null;cdRunning=false;
+      btn.textContent='开始';$('countdownDisplay').textContent='00:00';
+      try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
+        o.connect(g);g.connect(ac.destination);o.frequency.value=800;g.gain.value=.3;o.start();
+        setTimeout(()=>o.stop(),500);}catch(e){}
+      setTimeout(()=>alert('⏰ 时间到！'),100);return;}
+    updateCdDisplay();},50);
+}
+function updateCdDisplay(){const t=Math.ceil(cdRemaining/1000);
+  $('countdownDisplay').textContent=`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;}
+function resetCountdown(){cdRunning=false;clearInterval(cdInterval);cdInterval=null;cdRemaining=0;
+  $('cdStartBtn').textContent='开始';
+  const m=parseInt($('cdMin').value)||0,s=parseInt($('cdSec').value)||0;
+  $('countdownDisplay').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+
+/* ============================================================
+   初始化
+   ============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  initArt();
+  resetCountdown();
+  drawMath();
+});
+document.querySelectorAll('.tab[data-tab="draw-math"]').forEach(t=>{
+  t.addEventListener('click',()=>setTimeout(drawMath,100));
+});
+</script>
+</body>
+</html>
